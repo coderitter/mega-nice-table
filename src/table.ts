@@ -57,7 +57,10 @@ export class Table {
         if (this.columns) {
           for (let column of this.columns) {
             if (column.name && column.name in row) {
-              tableRow.add(column.name, row[column.name])
+              tableRow.add(column, row[column.name])
+            }
+            else {
+              tableRow.add(column)
             }
           }
         }
@@ -125,42 +128,63 @@ export class Column {
 export class Row {
 
   table?: Table
-  columnToCell: {[columnName: string]: Cell} = {}
+  cells: Cell[] = []
   
-  get cells(): Cell[] {
-    let cells: Cell[] = []
-    for (let prop in this.columnToCell) {
-      if (Object.prototype.hasOwnProperty.call(this.columnToCell, prop)) {
-        cells.push(this.columnToCell[prop])
+  add(valueOrCellOrColumnOrColumnName: any|Cell|Column|string, valueOrCell?: any|Cell) {
+    let column = undefined
+    let columnName = undefined
+    let cell = undefined
+    let value = undefined
+
+    if (valueOrCellOrColumnOrColumnName instanceof Cell) {
+      cell = valueOrCellOrColumnOrColumnName
+    }
+    else if (valueOrCellOrColumnOrColumnName instanceof Column) {
+      column = valueOrCellOrColumnOrColumnName
+    }
+
+    if (valueOrCell === undefined) {
+      value = valueOrCellOrColumnOrColumnName
+    }
+    else {
+      if (typeof valueOrCellOrColumnOrColumnName === 'string') {
+        columnName = valueOrCellOrColumnOrColumnName
+      }
+
+      if (valueOrCell instanceof Cell) {
+        cell = valueOrCell
+      }
+      else {
+        value = valueOrCell
       }
     }
 
-    return cells
-  }
-
-  add(columnName: string, valueOrCell: any) {
-    let cell
-
-    if (valueOrCell instanceof Cell) {
-      cell = valueOrCell
+    if (cell) {
+      value = cell.value
     }
-    else if (this.table) {
-      let column = this.table.getColumn(columnName)
 
-      if (column && column.cell) {
-        cell = column.cell(valueOrCell)
-      }
+    if (columnName != undefined && this.table) {
+      column = this.table.getColumn(columnName)
+    }
+
+    if (column && typeof column.cell === 'function') {
+      cell = column.cell(value)
     }
 
     if (cell == undefined) {
-      cell = new Cell(valueOrCell)
+      cell = new Cell(value)
     }
 
-    this.columnToCell[columnName] = cell
+    cell.column = column
+    this.cells.push(cell)
   }
 
   getCell(columnName: string): Cell|undefined {
-    return this.columnToCell[columnName]
+    for (let cell of this.cells) {
+      if (cell.column && cell.column.name == columnName) {
+        return cell
+      }
+    }
   }
 
   clear() {
@@ -168,12 +192,14 @@ export class Row {
       cell.clear()
     }
 
-    this.columnToCell = {}
     this.table = undefined // prevent memory leak
+    this.cells = []
   }
 }
 
 export class Cell {
+
+  column?: Column
   value: any
   private _displayValue?: any
 
@@ -195,6 +221,7 @@ export class Cell {
   }
 
   clear() {
+    this.column = undefined
     this.value = undefined
     this._displayValue = undefined
   }
