@@ -4,16 +4,25 @@ export class Table {
   columns: Column[] = []
   rows: Row[] = []
 
+  constructor(name?: string) {
+    this.name = name
+  }
+
   addColumns(...columns: any[]) {
     for (let column of columns) {
       if (typeof column === 'string') {
-        this.columns.push(new Column(column))
+        let tableColumn = new Column(column)
+        tableColumn.table = this
+        this.columns.push(tableColumn)
       }
       else if (column instanceof Column) {
+        column.table = this
         this.columns.push(column)
       }
       else if (typeof column === 'object') {
-        this.columns.push(new Column(column.name, column.title))
+        let tableColumn = new Column(column.name, column.title)
+        tableColumn.table = this
+        this.columns.push(tableColumn)
       }
     }
   }
@@ -50,13 +59,29 @@ export class Table {
 }
 
 export class Column {
+
+  table?: Table
   name?: string
+  objectName?: string
   title?: string
 
   constructor(name?: string, title?: string) {
     this.name = name
     this.title = title
   }
+
+  get id(): string|undefined {
+    if (this.objectName) {
+      return this.objectName + '.' + this.name
+    }
+
+    if (this.table && this.table.name) {
+      return this.table.name + '.' + this.name
+    }
+
+    return this.name
+  }
+
 }
 
 export class Row {

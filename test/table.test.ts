@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import 'mocha'
-import { Table, Column } from '../src/table'
+import { Column, Table } from '../src/table'
 
 describe('Table', function() {
   describe('addColumns', function() {
@@ -13,7 +13,9 @@ describe('Table', function() {
       )
 
       expect(table.columns.length).to.equal(2)
+      expect(table.columns[0].table).to.equal(table)
       expect(table.columns[0].name).to.equal('a')
+      expect(table.columns[1].table).to.equal(table)
       expect(table.columns[1].name).to.equal('b')
     })
 
@@ -24,8 +26,10 @@ describe('Table', function() {
 
       expect(table.columns.length).to.equal(2)
       expect(table.columns[0]).to.be.instanceOf(Column)
+      expect(table.columns[0].table).to.equal(table)
       expect(table.columns[0].name).to.equal('a')
       expect(table.columns[1]).to.be.instanceOf(Column)
+      expect(table.columns[1].table).to.equal(table)
       expect(table.columns[1].name).to.equal('b')
 
     })
@@ -40,9 +44,11 @@ describe('Table', function() {
 
       expect(table.columns.length).to.equal(2)
       expect(table.columns[0]).to.be.instanceOf(Column)
+      expect(table.columns[0].table).to.equal(table)
       expect(table.columns[0].name).to.equal('a')
       expect(table.columns[0].title).to.be.undefined
       expect(table.columns[1]).to.be.instanceOf(Column)
+      expect(table.columns[1].table).to.equal(table)
       expect(table.columns[1].name).to.equal('b')
       expect(table.columns[1].title).to.equal('B')
     })
@@ -57,14 +63,18 @@ describe('Table', function() {
       )
 
       expect(table.columns.length).to.equal(3)
+      expect(table.columns[0]).to.be.instanceOf(Column)
+      expect(table.columns[0].table).to.equal(table)
       expect(table.columns[0].name).to.equal('a')
       expect(table.columns[0].title).to.be.undefined
+      expect(table.columns[1]).to.be.instanceOf(Column)
+      expect(table.columns[1].table).to.equal(table)
       expect(table.columns[1].name).to.equal('b')
       expect(table.columns[1].title).to.equal('B')
       expect(table.columns[2]).to.be.instanceOf(Column)
+      expect(table.columns[2].table).to.equal(table)
       expect(table.columns[2].name).to.equal('c')
       expect(table.columns[2].title).to.equal('C')
-
     })
   })
 

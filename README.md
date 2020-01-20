@@ -2,7 +2,7 @@
 
 ## Install
 
-`npm install mega-nice-tabe`
+`npm install mega-nice-table`
 
 ## Overview
 
@@ -22,7 +22,7 @@ table.addColumns(
 
 ```typescript
 table.add(
-  { id: 1, name: 'Bernd', email: 'berd@email.com' },
+  { id: 1, name: 'Berd', email: 'berd@email.com' },
   { id: 1, name: 'Bert', email: 'bert@email.com' },
 )
 ```
