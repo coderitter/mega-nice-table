@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import 'mocha'
-import { Column, Table } from '../src/table'
+import { Column, Table, Cell } from '../src/table'
 
 describe('Table', function() {
   describe('addColumns', function() {
@@ -58,8 +58,8 @@ describe('Table', function() {
       
       table.addColumns(
         'a',
-        new Column('b', 'B'),
-        { name: 'c', title: 'C' }
+        new Column('b', 'ObjectB'),
+        { name: 'c', objectName: 'ObjectC', title: 'C' }
       )
 
       expect(table.columns.length).to.equal(3)
@@ -70,11 +70,30 @@ describe('Table', function() {
       expect(table.columns[1]).to.be.instanceOf(Column)
       expect(table.columns[1].table).to.equal(table)
       expect(table.columns[1].name).to.equal('b')
-      expect(table.columns[1].title).to.equal('B')
+      expect(table.columns[1].objectName).to.equal('ObjectB')
       expect(table.columns[2]).to.be.instanceOf(Column)
       expect(table.columns[2].table).to.equal(table)
       expect(table.columns[2].name).to.equal('c')
+      expect(table.columns[2].objectName).to.equal('ObjectC')
       expect(table.columns[2].title).to.equal('C')
+    })
+  })
+
+  describe('getColumn', function() {
+    it('should get the column by name', function() {
+      let table = new Table
+      table.addColumns('a', 'aa', 'A')
+
+      let column1 = table.getColumn('a')
+      let column2 = table.getColumn('aa')
+      let column3 = table.getColumn('A')
+
+      expect(column1).to.not.be.undefined
+      expect(column1?.name).to.equal('a')
+      expect(column2).to.not.be.undefined
+      expect(column2?.name).to.equal('aa')
+      expect(column3).to.not.be.undefined
+      expect(column3?.name).to.equal('A')
     })
   })
 
@@ -99,6 +118,18 @@ describe('Table', function() {
       expect(table.rows[1].cells.length).to.equal(2)
       expect(table.rows[1].cells[0].value).to.equal('a2')
       expect(table.rows[1].cells[1].value).to.equal('c2')
+    })
+
+    it('should create cells from the given cell factory on a column object', function() {
+      let table = new Table
+
+      table.addColumns(
+        new Column('a', (value) => new Cell(value + 'x'))
+      )
+
+      table.add({ a: 'a' })
+
+      expect(table.rows[0].cells[0].value).to.equal('ax')
     })
   })
 })

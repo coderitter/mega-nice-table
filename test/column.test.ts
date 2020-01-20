@@ -1,8 +1,25 @@
 import { expect } from 'chai'
 import 'mocha'
-import { Column, Table } from '../src/table'
+import { Cell, Column, Table } from '../src/table'
 
 describe('Column', function() {
+  describe('constructor', function() {
+    it('should accept a name and an objectName and a cell', function() {
+      let column = new Column('a', 'Object', (value) => new Cell)
+
+      expect(column.name).to.equal('a')
+      expect(column.objectName).to.equal('Object')
+      expect(column.cell).to.be.a('function')
+    })
+
+    it('should accept a name and a cell', function() {
+      let column = new Column('a', (value) => new Cell)
+
+      expect(column.name).to.equal('a')
+      expect(column.cell).to.be.a('function')
+    })
+  })
+
   describe('id', function() {
     it('should have the desired id', function() {
       let column = new Column('a')

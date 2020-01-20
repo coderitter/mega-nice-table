@@ -20,10 +20,18 @@ export class Table {
         this.columns.push(column)
       }
       else if (typeof column === 'object') {
-        let tableColumn = new Column(column.name, column.title)
+        let tableColumn = new Column(column)
         tableColumn.table = this
         this.columns.push(tableColumn)
       }
+    }
+  }
+
+  getColumn(name: string): Column|undefined {
+    for (let column of this.columns) {
+      if (column.name == name) {
+        return column
+      }  
     }
   }
 
@@ -35,6 +43,7 @@ export class Table {
 
     for (let row of rows) {
       let tableRow = new Row()
+      tableRow.table = this
 
       if (row instanceof Row) {
 
@@ -64,10 +73,28 @@ export class Column {
   name?: string
   objectName?: string
   title?: string
+  cell?: (value: any) => Cell
 
-  constructor(name?: string, title?: string) {
-    this.name = name
-    this.title = title
+  constructor(nameOrObject?: string, objectNameOrCell?: string|((value: any) => Cell), cell?: (value: any) => Cell) {
+    if (typeof nameOrObject === 'string') {
+      this.name = nameOrObject
+    }
+    else if (typeof nameOrObject === 'object' && nameOrObject !== null) {
+      let obj = <any> nameOrObject
+      this.table = obj.table
+      this.name = obj.name
+      this.objectName = obj.objectName
+      this.title = obj.title
+      this.cell = obj.cell
+    }
+
+    if (typeof objectNameOrCell ==='string') {
+      this.objectName = objectNameOrCell
+      this.cell = cell
+    }
+    else if (typeof objectNameOrCell === 'function') {
+      this.cell = objectNameOrCell
+    }
   }
 
   get id(): string|undefined {
@@ -101,7 +128,22 @@ export class Row {
   }
 
   add(columnName: string, value: any, displayValue?: string) {
-    this.columnToCell[columnName] = new Cell(value, displayValue)
+    let cell
+    
+    if (this.table) {
+      let column = this.table.getColumn(columnName)
+
+      if (column && column.cell) {
+        cell = column.cell(value)
+        cell.displayValue = displayValue
+      }
+    }
+
+    if (cell == undefined) {
+      cell = new Cell(value, displayValue)
+    }
+
+    this.columnToCell[columnName] = cell
   }
 }
 
