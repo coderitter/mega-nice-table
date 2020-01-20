@@ -149,10 +149,22 @@ export class Row {
 
 export class Cell {
   value: any
-  displayValue?: string
+  private _displayValue?: any
 
   constructor(value?: any, displayValue?: any) {
     this.value = value
-    this.displayValue = displayValue
+    this._displayValue = displayValue
+  }
+
+  get displayValue(): any {
+    if (this._displayValue !== undefined) {
+      return this._displayValue
+    }
+
+    return this.value
+  }
+
+  set displayValue(displayValue: any) {
+    this._displayValue = displayValue
   }
 }
