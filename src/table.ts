@@ -36,7 +36,7 @@ export class Table {
   }
 
   add(...rows: any) {
-    // if an array was given which was not prefixed with ... extract it
+    // if an array was given which was not prefixed with the three dots (...) extract it
     if (rows.length == 1 && rows[0] instanceof Array) {
       rows = rows[0]
     }
@@ -54,6 +54,8 @@ export class Table {
       }
       // add an arbitrary object
       else {
+        tableRow.sourceObject = row
+
         if (this.columns) {
           for (let column of this.columns) {
             if (column.name && column.name in row) {
@@ -128,6 +130,7 @@ export class Column {
 export class Row {
 
   table?: Table
+  sourceObject?: any
   cells: Cell[] = []
   
   add(valueOrCellOrColumnOrColumnName: any|Cell|Column|string, valueOrCell?: any|Cell) {

@@ -112,9 +112,11 @@ describe('Table', function() {
       )
 
       expect(table.rows.length).to.equal(2)
+      expect(table.rows[0].sourceObject).to.deep.equal({ a: 'a1', b: 'b1', c: 'c1', d: 'd1' })
       expect(table.rows[0].cells.length).to.equal(2)
       expect(table.rows[0].cells[0].value).to.equal('a1')
       expect(table.rows[0].cells[1].value).to.equal('c1')
+      expect(table.rows[1].sourceObject).to.deep.equal({ a: 'a2', b: 'b2', c: 'c2', d: 'd2' })
       expect(table.rows[1].cells.length).to.equal(2)
       expect(table.rows[1].cells[0].value).to.equal('a2')
       expect(table.rows[1].cells[1].value).to.equal('c2')
