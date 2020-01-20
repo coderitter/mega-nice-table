@@ -145,6 +145,10 @@ export class Row {
 
     this.columnToCell[columnName] = cell
   }
+
+  getCell(columnName: string): Cell|undefined {
+    return this.columnToCell[columnName]
+  }
 }
 
 export class Cell {
