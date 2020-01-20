@@ -16,4 +16,15 @@ describe('Column', function() {
       expect(cell2).to.be.undefined
     })
   })
+
+  describe('clear', function() {
+    it('should clear the row appropriately', function() {
+      let row = new Row
+      row.add('a', new Cell)
+      row.clear()
+  
+      expect(row.table).to.be.undefined
+      expect(row.cells.length).to.equal(0)  
+    })
+  })
 })

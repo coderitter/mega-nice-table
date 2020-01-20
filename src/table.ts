@@ -45,7 +45,7 @@ export class Table {
       if (row == undefined) {
         continue
       }
-      
+
       let tableRow = new Row()
       tableRow.table = this
 
@@ -68,6 +68,14 @@ export class Table {
 
       this.rows.push(tableRow)
     }
+  }
+
+  clear() {
+    for (let row of this.rows) {
+      row.clear()
+    }
+
+    this.rows = []
   }
 }
 
@@ -112,7 +120,6 @@ export class Column {
 
     return this.name
   }
-
 }
 
 export class Row {
@@ -131,20 +138,22 @@ export class Row {
     return cells
   }
 
-  add(columnName: string, value: any, displayValue?: string) {
+  add(columnName: string, valueOrCell: any) {
     let cell
-    
-    if (this.table) {
+
+    if (valueOrCell instanceof Cell) {
+      cell = valueOrCell
+    }
+    else if (this.table) {
       let column = this.table.getColumn(columnName)
 
       if (column && column.cell) {
-        cell = column.cell(value)
-        cell.displayValue = displayValue
+        cell = column.cell(valueOrCell)
       }
     }
 
     if (cell == undefined) {
-      cell = new Cell(value, displayValue)
+      cell = new Cell(valueOrCell)
     }
 
     this.columnToCell[columnName] = cell
@@ -152,6 +161,15 @@ export class Row {
 
   getCell(columnName: string): Cell|undefined {
     return this.columnToCell[columnName]
+  }
+
+  clear() {
+    for (let cell of this.cells) {
+      cell.clear()
+    }
+
+    this.columnToCell = {}
+    this.table = undefined // prevent memory leak
   }
 }
 
@@ -174,5 +192,10 @@ export class Cell {
 
   set displayValue(displayValue: any) {
     this._displayValue = displayValue
+  }
+
+  clear() {
+    this.value = undefined
+    this._displayValue = undefined
   }
 }

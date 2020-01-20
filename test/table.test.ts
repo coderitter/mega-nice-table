@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import 'mocha'
-import { Column, Table, Cell } from '../src/table'
+import { Column, Table, Cell, Row } from '../src/table'
 
 describe('Table', function() {
   describe('addColumns', function() {
@@ -130,6 +130,18 @@ describe('Table', function() {
       table.add({ a: 'a' })
 
       expect(table.rows[0].cells[0].value).to.equal('ax')
+    })
+  })
+
+  describe('clear', function() {
+    it('should clear all rows', function() {
+      let table = new Table
+      let row = new Row
+
+      table.add(row)
+      table.clear()
+
+      expect(table.rows.length).to.equal(0)
     })
   })
 })
