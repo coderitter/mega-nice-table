@@ -26,3 +26,17 @@ table.add(
   { id: 1, name: 'Bert', email: 'bert@email.com' },
 )
 ```
+
+### Column ids
+
+```typescript
+let column = new Column('name')
+column.id == 'name'
+
+let table = new Table('PersonTable')
+table.add(column)
+column.id == 'PersonTable.name'
+
+column.objectName = 'Person'
+column.id == 'Person.name'
+```
