@@ -36,12 +36,16 @@ export class Table {
   }
 
   add(...rows: any) {
-    //  convert to array
-    if (! (rows instanceof Array)) {
-      rows = [ rows ]
+    // if an array was given which was not prefixed with ... extract it
+    if (rows.length == 1 && rows[0] instanceof Array) {
+      rows = rows[0]
     }
 
     for (let row of rows) {
+      if (row == undefined) {
+        continue
+      }
+      
       let tableRow = new Row()
       tableRow.table = this
 
