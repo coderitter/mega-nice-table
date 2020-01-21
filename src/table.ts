@@ -90,9 +90,9 @@ export class Column {
   name?: string
   objectName?: string
   title?: string
-  cell?: (value: any) => Cell
+  cell?: (value: any, row: Row) => Cell
 
-  constructor(nameOrObject?: string, objectNameOrCell?: string|((value: any) => Cell), cell?: (value: any) => Cell) {
+  constructor(nameOrObject?: string, objectNameOrCell?: string|((value: any, row: Row) => Cell), cell?: (value: any, row: Row) => Cell) {
     if (typeof nameOrObject === 'string') {
       this.name = nameOrObject
     }
@@ -171,7 +171,7 @@ export class Row {
     }
 
     if (column && typeof column.cell === 'function') {
-      cell = column.cell(value)
+      cell = column.cell(value, this)
     }
 
     if (cell == undefined) {

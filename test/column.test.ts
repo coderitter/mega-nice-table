@@ -5,7 +5,7 @@ import { Cell, Column, Table } from '../src/table'
 describe('Column', function() {
   describe('constructor', function() {
     it('should accept a name and an objectName and a cell', function() {
-      let column = new Column('a', 'Object', (value) => new Cell)
+      let column = new Column('a', 'Object', (value, row) => new Cell)
 
       expect(column.name).to.equal('a')
       expect(column.objectName).to.equal('Object')
