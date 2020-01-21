@@ -179,6 +179,7 @@ export class Row {
     }
 
     cell.column = column
+    cell.row = this
     this.cells.push(cell)
   }
 
@@ -203,6 +204,7 @@ export class Row {
 export class Cell {
 
   column?: Column
+  row?: Row
   value: any
   private _displayValue?: any
 

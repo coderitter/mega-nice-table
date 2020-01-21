@@ -10,6 +10,7 @@ describe('Row', function() {
       
       expect(row.cells.length).to.equal(1)
       expect(row.cells[0]).to.be.instanceOf(Cell)
+      expect(row.cells[0].row).to.equal(row)
       expect(row.cells[0].value).to.equal('a')
     })
 
@@ -19,6 +20,7 @@ describe('Row', function() {
       
       expect(row.cells.length).to.equal(1)
       expect(row.cells[0]).to.be.instanceOf(Cell)
+      expect(row.cells[0].row).to.equal(row)
       expect(row.cells[0].value).to.equal('a')
     })
 
@@ -30,6 +32,7 @@ describe('Row', function() {
 
       expect(row.cells.length).to.equal(1)
       expect(row.cells[0]).to.be.instanceOf(Cell)
+      expect(row.cells[0].row).to.equal(row)
       expect(row.cells[0].column).to.not.be.undefined
       expect(row.cells[0].column?.name).to.equal('a')
       expect(row.cells[0].value).to.equal('a1')
@@ -43,6 +46,7 @@ describe('Row', function() {
       
       expect(row.cells.length).to.equal(1)
       expect(row.cells[0]).to.be.instanceOf(Cell)
+      expect(row.cells[0].row).to.equal(row)
       expect(row.cells[0].column).to.not.be.undefined
       expect(row.cells[0].column?.name).to.equal('a')
       expect(row.cells[0].value).to.equal('a1')
@@ -56,6 +60,7 @@ describe('Row', function() {
       
       expect(row.cells.length).to.equal(1)
       expect(row.cells[0]).to.be.instanceOf(Cell)
+      expect(row.cells[0].row).to.equal(row)
       expect(row.cells[0].column).to.not.be.undefined
       expect(row.cells[0].column?.name).to.equal('a')
       expect(row.cells[0].value).to.equal('a1')
@@ -71,6 +76,7 @@ describe('Row', function() {
 
       expect(row.cells.length).to.equal(1)
       expect(row.cells[0]).to.be.instanceOf(Cell)
+      expect(row.cells[0].row).to.equal(row)
       expect(row.cells[0].column).to.not.be.undefined
       expect(row.cells[0].column?.name).to.equal('a')
       expect(row.cells[0].value).to.equal('a1')
