@@ -3,9 +3,47 @@ export class Table {
   name?: string
   columns: Column[] = []
   rows: Row[] = []
+  private _rowCount?: number
+  rowsPerPage: number = 10
+  currentPage: number = 0
 
   constructor(name?: string) {
     this.name = name
+  }
+
+  get rowCount(): number {
+    if (this._rowCount !== undefined) {
+      return this._rowCount
+    }
+
+    if (Array.isArray(this.rows)) {
+      return this.rows.length
+    }
+    
+    return 0
+  }
+
+  set rowCount(rowCount: number) {
+    this._rowCount = rowCount
+  }
+
+  get pageCount(): number {
+    if (this.rowsPerPage > 0) {
+      return Math.ceil(this.rowCount / this.rowsPerPage)
+    }
+    else {
+      return 1
+    }
+  }
+
+  get pages(): number[] {
+    let pages: number[] = []
+
+    for (let i = 1; i <= this.pageCount; i++) {
+      pages.push(i)
+    }
+
+    return pages
   }
 
   addColumns(...columns: any[]) {

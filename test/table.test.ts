@@ -146,4 +146,57 @@ describe('Table', function() {
       expect(table.rows.length).to.equal(0)
     })
   })
+
+  describe('rowCount', function() {
+    it('should count the rows according to the added rows', function() {
+      let table = new Table
+    
+      table.add({ a: 'a1' })
+      expect(table.rowCount).to.equal(1)
+
+      table.add({ a: 'a2' })
+      expect(table.rowCount).to.equal(2)
+    })
+
+    it('should use the row count that is set', function() {
+      let table = new Table
+      table.rowCount = 10
+      table.add({ a: 'a1' }, { a: 'a2' })
+      expect(table.rowCount).to.equal(10)
+    })
+  })
+
+  describe('pageCount', function() {
+    it('should calculate the correct page count', function() {
+      let table = new Table
+      table.rowsPerPage = 10
+
+      table.rowCount = 100
+      expect(table.pageCount).to.equal(10)
+
+      table.rowCount = 105
+      expect(table.pageCount).to.equal(11)
+    })
+
+    it('should return 1 if the rows per page is set to 0', function() {
+      let table = new Table
+      table.rowsPerPage = 0
+
+      table.rowCount = 100
+      expect(table.pageCount).to.equal(1)
+    })
+  })
+
+  describe('pages', function() {
+    it('should return the correct array of page numbers', function() {
+      let table = new Table
+      table.rowCount = 105
+      table.rowsPerPage = 10
+
+      let pages = table.pages
+      expect(pages.length).to.equal(11)
+      expect(pages[0]).to.equal(1)
+      expect(pages[10]).to.equal(11)
+    })
+  })
 })
