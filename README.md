@@ -40,3 +40,19 @@ column.id == 'PersonTable.name'
 column.objectName = 'Person'
 column.id == 'Person.name'
 ```
+
+### Pagination
+
+```typescript
+let table = new Table
+table.add({'name': 'Berd'}, {'name': 'Bert'})
+
+table.rowsPerPage = 10
+table.pageCount == 1
+table.pages == [1]
+
+// you can also set the number if rows manually which is useful for partial tables
+table.rowCount = 100
+table.pageCount == 10
+table.pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+```
