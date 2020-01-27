@@ -6,7 +6,7 @@ export class Table {
   private _rowCount?: number
   rowsPerPage: number = 10
   currentPage: number = 0
-  widget: Widget = {}
+  widget: TableWidget = {}
 
   constructor(name?: string) {
     this.name = name
@@ -271,6 +271,6 @@ export class Cell {
   }
 }
 
-export interface Widget {
+export interface TableWidget {
   onPageClick?: (pageNumber: number) => void
 }
