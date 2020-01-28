@@ -5,7 +5,7 @@ export class Table {
   rows: Row[] = []
   private _rowCount?: number
   rowsPerPage: number = 10
-  currentPage: number = 0
+  currentPage: number = 1
   widget: TableWidget = {}
 
   constructor(name?: string) {

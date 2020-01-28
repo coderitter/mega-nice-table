@@ -1,6 +1,6 @@
 {
   "name": "mega-nice-table",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A mega nice data structure to describe tables.",
   "main": "lib/table.js",
   "types": "lib/table.d.ts",
