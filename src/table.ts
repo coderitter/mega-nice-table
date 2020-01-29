@@ -80,28 +80,30 @@ export class Table {
       rows = rows[0]
     }
 
-    for (let row of rows) {
-      if (row == undefined) {
+    for (let rowObject of rows) {
+      if (rowObject == undefined) {
         continue
       }
 
-      let tableRow = new Row()
-      tableRow.table = this
+      let row
 
-      if (row instanceof Row) {
-
+      if (rowObject instanceof Row) {
+        row = rowObject
+        row.table = this
       }
       // add an arbitrary object
       else {
-        tableRow.sourceObject = row
+        row = new Row()
+        row.table = this
+        row.rowData = rowObject
 
         if (this.columns) {
           for (let column of this.columns) {
-            if (column.name && column.name in row) {
-              tableRow.add(column, row[column.name])
+            if (column.name && column.name in rowObject) {
+              row.add(column, rowObject)
             }
             else {
-              tableRow.add(column)
+              row.add(column)
             }
           }
         }
@@ -110,7 +112,7 @@ export class Table {
         }  
       }
 
-      this.rows.push(tableRow)
+      this.rows.push(row)
     }
   }
 
@@ -129,7 +131,7 @@ export class Column {
   name?: string
   objectName?: string
   title?: string
-  cell?: (value: any, row: Row) => Cell
+  cell?: (value: any, rowObject: any, row: Row) => Cell
 
   constructor(nameOrObject?: string, objectNameOrCell?: string|((value: any, row: Row) => Cell), cell?: (value: any, row: Row) => Cell) {
     if (typeof nameOrObject === 'string') {
@@ -169,14 +171,14 @@ export class Column {
 export class Row {
 
   table?: Table
-  sourceObject?: any
+  rowData?: any
   cells: Cell[] = []
   
   add(valueOrCellOrColumnOrColumnName: any|Cell|Column|string, valueOrCell?: any|Cell) {
-    let column = undefined
-    let columnName = undefined
-    let cell = undefined
-    let value = undefined
+    let column: Column|undefined
+    let columnName: string|undefined
+    let cell: Cell|undefined
+    let value: any = undefined
 
     if (valueOrCellOrColumnOrColumnName instanceof Cell) {
       cell = valueOrCellOrColumnOrColumnName
@@ -201,24 +203,26 @@ export class Row {
       }
     }
 
-    if (cell) {
-      value = cell.value
-    }
-
     if (columnName != undefined && this.table) {
       column = this.table.getColumn(columnName)
     }
 
-    if (column && typeof column.cell === 'function') {
-      cell = column.cell(value, this)
-    }
-
     if (cell == undefined) {
-      cell = new Cell(value)
+      if (column && typeof column.cell === 'function') {
+        let resolvedValue = resolveFromColumn(value, column)
+        cell = column.cell(resolvedValue, this.rowData, this)
+      }
+      else {
+        cell = new Cell()
+        cell.column = column
+        cell.row = this    
+        cell.setValue(value)
+      }
     }
 
     cell.column = column
-    cell.row = this
+    cell.row = this    
+
     this.cells.push(cell)
   }
 
@@ -242,14 +246,27 @@ export class Row {
 
 export class Cell {
 
-  column?: Column
+  _column?: Column
   row?: Row
   value: any
   private _displayValue?: any
+  
+  setValue: (value: any) => void = (value: any) => {
+    this.value = resolveFromColumn(value, this.column)
+  }
 
   constructor(value?: any, displayValue?: any) {
-    this.value = value
+    this.setValue(value)
     this._displayValue = displayValue
+  }
+
+  get column(): Column|undefined {
+    return this._column
+  }
+
+  set column(column: Column|undefined) {
+    this._column = column
+    this.setValue(this.value)
   }
 
   get displayValue(): any {
@@ -273,4 +290,37 @@ export class Cell {
 
 export interface TableWidget {
   onPageClick?: (pageNumber: number) => void
+}
+
+export function resolvePath(path: string, value: any): any {
+  let splitName = path.split('.')
+  let couldResolve = true
+  let i
+
+  for (i = 0; i < splitName.length; i++) {
+    let namePart = splitName[i]
+
+    if (namePart in value) {
+      value = value[namePart]
+    }
+    else {
+      couldResolve = false
+      break
+    }
+  }
+
+  if (i == splitName.length && couldResolve) {
+    return value
+  }
+}
+
+export function resolveFromColumn(value: any, column?: Column): any {
+  if (typeof value == 'object' && value !== null) {
+    if (column && column.name) {
+      return resolvePath(column.name, value)
+    }
+  }
+  else {
+    return value
+  }
 }
