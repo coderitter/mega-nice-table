@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import 'mocha'
-import { Cell, Column, Table, Row } from '../src/table'
+import { Cell, Column, Row } from '../src/table'
 
 describe('Row', function() {
   describe('add', function() {

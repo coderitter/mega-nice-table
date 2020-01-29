@@ -99,13 +99,8 @@ export class Table {
 
         if (this.columns) {
           for (let column of this.columns) {
-            if (column.name && column.name in rowData) {
-              let value = extractValueFromColumn(rowData, column)
-              row.add(column, value)
-            }
-            else {
-              row.add(column)
-            }
+            let value = extractValueFromColumn(rowData, column)
+            row.add(column, value)
           }
         }
         else {
