@@ -80,27 +80,27 @@ export class Table {
       rows = rows[0]
     }
 
-    for (let rowObject of rows) {
-      if (rowObject == undefined) {
+    for (let rowData of rows) {
+      if (rowData == undefined) {
         continue
       }
 
       let row
 
-      if (rowObject instanceof Row) {
-        row = rowObject
+      if (rowData instanceof Row) {
+        row = rowData
         row.table = this
       }
       // add an arbitrary object
       else {
         row = new Row()
         row.table = this
-        row.rowData = rowObject
+        row.rowData = rowData
 
         if (this.columns) {
           for (let column of this.columns) {
-            if (column.name && column.name in rowObject) {
-              row.add(column, rowObject)
+            if (column.name && column.name in rowData) {
+              row.add(column, rowData)
             }
             else {
               row.add(column)
