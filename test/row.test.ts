@@ -26,6 +26,20 @@ describe('Row', function() {
 
     it('should add an empty cell for a column', function() {
       let row = new Row
+      let column = new Column('a')
+
+      row.add(column)
+
+      expect(row.cells.length).to.equal(1)
+      expect(row.cells[0]).to.be.instanceOf(Cell)
+      expect(row.cells[0].row).to.equal(row)
+      expect(row.cells[0].column).to.not.be.undefined
+      expect(row.cells[0].column?.name).to.equal('a')
+      expect(row.cells[0].value).to.be.undefined
+    })
+
+    it('should add create cell from the cell factory method on a column', function() {
+      let row = new Row
       let column = new Column('a', () => new Cell('a1'))
 
       row.add(column)
@@ -58,22 +72,6 @@ describe('Row', function() {
       
       row.add(column, new Cell('a1'))
       
-      expect(row.cells.length).to.equal(1)
-      expect(row.cells[0]).to.be.instanceOf(Cell)
-      expect(row.cells[0].row).to.equal(row)
-      expect(row.cells[0].column).to.not.be.undefined
-      expect(row.cells[0].column?.name).to.equal('a')
-      expect(row.cells[0].value).to.equal('a1')
-    })
-
-    it('should add a value for a column name', function() {
-      let table = new Table
-      table.addColumns(new Column('a'))
-      
-      let row = new Row
-      row.table = table
-      row.add('a', 'a1')
-
       expect(row.cells.length).to.equal(1)
       expect(row.cells[0]).to.be.instanceOf(Cell)
       expect(row.cells[0].row).to.equal(row)

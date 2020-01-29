@@ -175,26 +175,26 @@ export class Row {
   rowData?: any
   cells: Cell[] = []
   
-  add(valueOrCellOrColumnOrColumnName: any|Cell|Column|string, valueOrCell?: any|Cell) {
+  /**
+   * add(new Cell)
+   * add('cellValue')
+   * add(new Column)
+   * add(new Column, new Cell)
+   * add(new Column, 'cellValue')
+   * 
+   * @param cellOrValueOrColumn 
+   * @param valueOrCell 
+   */
+  add(cellOrValueOrColumn: any|Cell|Column|string, valueOrCell?: any|Cell) {
     let column: Column|undefined
-    let columnName: string|undefined
     let cell: Cell|undefined
     let value: any = undefined
 
-    if (valueOrCellOrColumnOrColumnName instanceof Cell) {
-      cell = valueOrCellOrColumnOrColumnName
+    if (cellOrValueOrColumn instanceof Cell) {
+      cell = cellOrValueOrColumn
     }
-    else if (valueOrCellOrColumnOrColumnName instanceof Column) {
-      column = valueOrCellOrColumnOrColumnName
-    }
-
-    if (valueOrCell === undefined) {
-      value = valueOrCellOrColumnOrColumnName
-    }
-    else {
-      if (typeof valueOrCellOrColumnOrColumnName === 'string') {
-        columnName = valueOrCellOrColumnOrColumnName
-      }
+    else if (cellOrValueOrColumn instanceof Column) {
+      column = cellOrValueOrColumn
 
       if (valueOrCell instanceof Cell) {
         cell = valueOrCell
@@ -203,9 +203,8 @@ export class Row {
         value = valueOrCell
       }
     }
-
-    if (columnName != undefined && this.table) {
-      column = this.table.getColumn(columnName)
+    else {
+      value = cellOrValueOrColumn
     }
 
     if (cell == undefined) {
