@@ -100,7 +100,8 @@ export class Table {
         if (this.columns) {
           for (let column of this.columns) {
             if (column.name && column.name in rowData) {
-              row.add(column, rowData)
+              let value = extractValueFromColumn(rowData, column)
+              row.add(column, value)
             }
             else {
               row.add(column)
@@ -209,14 +210,10 @@ export class Row {
 
     if (cell == undefined) {
       if (column && typeof column.cell === 'function') {
-        let resolvedValue = resolveFromColumn(value, column)
-        cell = column.cell(resolvedValue, this.rowData, this)
+        cell = column.cell(value, this.rowData, this)
       }
       else {
-        cell = new Cell()
-        cell.column = column
-        cell.row = this    
-        cell.setValue(value)
+        cell = new Cell(value)
       }
     }
 
@@ -246,27 +243,14 @@ export class Row {
 
 export class Cell {
 
-  _column?: Column
+  column?: Column
   row?: Row
   value: any
   private _displayValue?: any
   
-  setValue: (value: any) => void = (value: any) => {
-    this.value = resolveFromColumn(value, this.column)
-  }
-
   constructor(value?: any, displayValue?: any) {
-    this.setValue(value)
+    this.value = value
     this._displayValue = displayValue
-  }
-
-  get column(): Column|undefined {
-    return this._column
-  }
-
-  set column(column: Column|undefined) {
-    this._column = column
-    this.setValue(this.value)
   }
 
   get displayValue(): any {
@@ -292,7 +276,7 @@ export interface TableWidget {
   onPageClick?: (pageNumber: number) => void
 }
 
-export function resolvePath(path: string, value: any): any {
+export function extractValue(path: string, value: any): any {
   let splitName = path.split('.')
   let couldResolve = true
   let i
@@ -314,10 +298,13 @@ export function resolvePath(path: string, value: any): any {
   }
 }
 
-export function resolveFromColumn(value: any, column?: Column): any {
+export function extractValueFromColumn(value: any, column?: Column): any {
   if (typeof value == 'object' && value !== null) {
     if (column && column.name) {
-      return resolvePath(column.name, value)
+      return extractValue(column.name, value)
+    }
+    else {
+      return value
     }
   }
   else {

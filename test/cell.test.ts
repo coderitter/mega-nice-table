@@ -1,19 +1,8 @@
 import { expect } from 'chai'
 import 'mocha'
-import { Cell, Column } from '../src/table'
+import { Cell } from '../src/table'
 
 describe('Cell', function() {
-  describe('setValue', function() {
-    it('should extract the value from an object using the name of the set column', function() {
-      let column = new Column('a.b')
-      let cell = new Cell
-      cell.column = column
-      cell.setValue({ a: { b: 'b1' }})
-
-      expect(cell.value).to.equal('b1')
-    })
-  })
-
   describe('displayValue', function() {
     it('should return the proper display value', function() {
       let cell = new Cell
